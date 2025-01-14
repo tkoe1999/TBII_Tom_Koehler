@@ -1,0 +1,5 @@
+segno
+opencv-python-headless
+pillow
+qrcode-artistic
+pymongo
