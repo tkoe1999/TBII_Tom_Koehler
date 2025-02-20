@@ -22,6 +22,10 @@ if "special_trait_text" not in st.session_state:
 if "monthly_wage" not in st.session_state:
     st.session_state.monthly_wage = ""
 
+# --- Global Headline ---
+st.title("Space Gothic Character Generator")
+st.subheader("Mercenary")
+
 # === Calculation Functions ===
 def calculate_attributes():
     """Calculate the base attributes and reset rerolls & special traits."""
