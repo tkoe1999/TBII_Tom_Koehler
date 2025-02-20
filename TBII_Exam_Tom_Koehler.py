@@ -110,8 +110,8 @@ def display_magazine():
 
 
 def inventory_page():
-    st.title("Inventory & Attacking")
-    st.subheader("Weapon Stat Block: Luger .357 Automagnum")
+    st.title("Inventory")
+    st.subheader("Weapon: Luger .357 Automagnum")
     # Top row: Damage and Magazine Size
     cols_top = st.columns([1, 1, 1, 1, 1])
     cols_top[0].markdown("**Damage:** ")
