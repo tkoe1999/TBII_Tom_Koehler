@@ -142,6 +142,71 @@ def inventory_page():
     st.title("Inventory & Attacking")
     st.write("Placeholder for Inventory and Attacking Script.")
 
+# Initialize magazine bullet count in session_state if not already set
+if "magazine" not in st.session_state:
+    st.session_state.magazine = 15
+
+# --- Weapon Stat Block ---
+st.header("Weapon Stat Block: Luger .357 Automagnum")
+st.write("**Damage:** 1d10+2")
+st.write("**Range:** Short 20m / Medium 40m / Long 60m")
+st.write("**Firerate:** 3")
+st.write("**Burst:** 5")
+st.write("**Magazine Size:** 15")
+
+# --- Function to Display Magazine Graphically ---
+def display_magazine():
+    """
+    Display a graphic strip representing the magazine:
+    A filled block for each bullet left and an empty block for spent bullets.
+    """
+    bullets_left = st.session_state.magazine
+    total_bullets = 15
+    # Using emoji blocks: green square for a bullet and white square for an empty slot.
+    filled = "🟩"
+    empty = "⬜"
+    magazine_display = filled * bullets_left + empty * (total_bullets - bullets_left)
+    st.markdown("**Magazine:** " + magazine_display)
+
+# Display the current magazine
+display_magazine()
+
+# --- Firing Mode Buttons ---
+# Layout four buttons in a row
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    if st.button("Single Fire"):
+        # Single fire removes 1 bullet if available.
+        if st.session_state.magazine >= 1:
+            st.session_state.magazine -= 1
+        else:
+            st.warning("Out of bullets!")
+
+with col2:
+    if st.button("Normal Fire"):
+        # Normal fire removes 3 bullets if available.
+        if st.session_state.magazine >= 3:
+            st.session_state.magazine -= 3
+        else:
+            st.warning("Not enough bullets for normal fire!")
+
+with col3:
+    if st.button("Burst Fire"):
+        # Burst fire removes 5 bullets if available.
+        if st.session_state.magazine >= 5:
+            st.session_state.magazine -= 5
+        else:
+            st.warning("Not enough bullets for burst fire!")
+
+with col4:
+    if st.button("Reload"):
+        # Reload resets the magazine to full.
+        st.session_state.magazine = 15
+
+# Display the updated magazine strip
+display_magazine()
+
 def personal_dossier_page():
     st.title("Personal Dossier of the Terran Security Archive")
     fields = [
