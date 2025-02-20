@@ -112,12 +112,16 @@ def display_magazine():
 def inventory_page():
     st.title("Inventory & Attacking")
     st.subheader("Weapon Stat Block: Luger .357 Automagnum")
-    cols = st.columns([1, 2, 1, 1, 1])
-    cols[0].markdown("**Damage:** 1d10+2")
-    cols[1].markdown("**Range:** Short 20m / Medium 40m / Long 60m")
-    cols[2].markdown("**Firerate:** 3")
-    cols[3].markdown("**Burst:** 5")
-    cols[4].markdown("**Magazine Size:** 15")
+    # Top row: Damage and Magazine Size
+    cols_top = st.columns([1, 1])
+    cols_top[0].markdown("**Damage:** 1d10+2")
+    cols_top[1].markdown("**Magazine Size:** 15")
+
+    # Bottom row: Range, Firerate, and Burst
+    cols_bottom = st.columns([2, 1, 1])
+    cols_bottom[0].markdown("**Range:** Short 20m / Medium 40m / Long 60m")
+    cols_bottom[1].markdown("**Firerate:** 3")
+    cols_bottom[2].markdown("**Burst:** 5")
 
     # --- Firing Mode Buttons ---
     col1, col2, col3, col4 = st.columns(4)
