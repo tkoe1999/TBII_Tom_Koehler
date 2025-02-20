@@ -118,9 +118,6 @@ def inventory_page():
     st.write("**Burst:** 5")
     st.write("**Magazine Size:** 15")
 
-    # Display the magazine only once.
-    display_magazine()
-
     # --- Firing Mode Buttons ---
     col1, col2, col3, col4 = st.columns(4)
     with col1:
@@ -145,6 +142,9 @@ def inventory_page():
         if st.button("Reload"):
             st.session_state.magazine = 15
 
+    # Display the magazine after processing button events,
+    # ensuring the updated state is shown immediately.
+    display_magazine()
 
 # === Attributes Page ===
 def attributes_page():
