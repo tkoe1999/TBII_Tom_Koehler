@@ -112,7 +112,7 @@ def display_magazine():
 def inventory_page():
     st.title("Inventory & Attacking")
     st.subheader("Weapon Stat Block: Luger .357 Automagnum")
-    cols = st.columns(5)
+    cols = st.columns([1, 2, 1, 1, 1])
     cols[0].markdown("**Damage:** 1d10+2")
     cols[1].markdown("**Range:** Short 20m / Medium 40m / Long 60m")
     cols[2].markdown("**Firerate:** 3")
