@@ -68,7 +68,7 @@ def reroll_attribute(index):
         st.session_state.results[index] = new_val
         st.session_state.reroll_count += 1
 
-        if index == 2:  # If rerolling Willpower, update Luck.
+        if index == 2:  # Update Luck if Willpower is rerolled.
             st.session_state.luck = math.ceil(st.session_state.results[2] / 2 + 20 + random.randint(3, 30))
         if index in [5, 7]:  # Update skill points if Experience or Intelligence changes.
             st.session_state.career_skill_points = math.ceil(3 * st.session_state.results[5])
@@ -144,9 +144,6 @@ def inventory_page():
     with col4:
         if st.button("Reload"):
             st.session_state.magazine = 15
-
-    # Update magazine display after any action.
-    display_magazine()
 
 
 # === Attributes Page ===
