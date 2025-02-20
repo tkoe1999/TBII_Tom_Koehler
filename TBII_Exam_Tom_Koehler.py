@@ -112,48 +112,95 @@ def display_magazine():
 def inventory_page():
     st.title("Inventory")
     st.subheader("Weapon: Luger .357 Automagnum")
-    # Top row: Damage and Magazine Size
+    # Top row: Labels
     cols_top = st.columns([1, 1, 1, 1, 1])
-    cols_top[0].markdown("**Damage:** ")
+    cols_top[0].markdown("**Damage:**")
     cols_top[1].markdown("**Range:**")
-    cols_top[2].markdown("**Fire Rate**")
+    cols_top[2].markdown("**Fire Rate:**")
     cols_top[3].markdown("**Burst Rate:**")
     cols_top[4].markdown("**Magazine Size:**")
-    # Bottom row: Range, Firerate, and Burst
-    cols_bottom = st.columns([1,1,1,1,1])
+    # Bottom row: Values
+    cols_bottom = st.columns([1, 1, 1, 1, 1])
     cols_bottom[0].markdown("1d10+2")
-    cols_bottom[1].markdown("Short 20m <br> Medium 40m <br> Long 60m",unsafe_allow_html=True)
+    cols_bottom[1].markdown("Short 20m <br> Medium 40m <br> Long 60m", unsafe_allow_html=True)
     cols_bottom[2].markdown("3")
     cols_bottom[3].markdown("5")
     cols_bottom[4].markdown("15")
 
-    # --- Firing Mode Buttons ---
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        if st.button("Single Fire"):
-            if st.session_state.magazine >= 1:
-                st.session_state.magazine -= 1
-            else:
-                st.warning("Out of bullets!")
-    with col2:
-        if st.button("Semi Burst"):
-            if st.session_state.magazine >= 3:
-                st.session_state.magazine -= 3
-            else:
-                st.warning("Not enough bullets for normal fire!")
-    with col3:
-        if st.button("Full burst"):
-            if st.session_state.magazine >= 5:
-                st.session_state.magazine -= 5
-            else:
-                st.warning("Not enough bullets for burst fire!")
-    with col4:
-        if st.button("Reload"):
-            st.session_state.magazine = 15
+    st.markdown("---")
+    # --- New Shooting Skill Section ---
+    # Base shooting skill for pistols is 65%.
+    range_option = st.radio("Select Range", ("Short", "Medium", "Long"), index=1)
+    if range_option == "Short":
+        range_modifier = 10
+    elif range_option == "Medium":
+        range_modifier = 0
+    else:  # Long
+        range_modifier = -10
+    base_chance = 65
+    final_chance = base_chance + range_modifier
+    st.write("Adjusted Shooting Chance:", final_chance, "%")
 
-    # Display the magazine after processing button events,
-    # ensuring the updated state is shown immediately.
+    # --- Firing Mode Buttons with Shooting Logic ---
+    col1, col2, col3, col4 = st.columns(4)
+    # Single Fire (1 shot)
+    if col1.button("Single Fire"):
+        if st.session_state.magazine >= 1:
+            st.session_state.magazine -= 1
+            shots = 1
+            hits = 0
+            total_damage = 0
+            for i in range(shots):
+                roll = random.randint(1, 100)
+                if roll <= final_chance:
+                    hits += 1
+                    damage = random.randint(1, 10) + 2
+                    total_damage += damage
+            col1.write("Shots:", shots, "Hits:", hits, "Damage:", total_damage)
+        else:
+            st.warning("Out of bullets!")
+
+    # Semi Burst (3 shots)
+    if col2.button("Semi Burst"):
+        if st.session_state.magazine >= 3:
+            st.session_state.magazine -= 3
+            shots = 3
+            hits = 0
+            total_damage = 0
+            for i in range(shots):
+                roll = random.randint(1, 100)
+                if roll <= final_chance:
+                    hits += 1
+                    damage = random.randint(1, 10) + 2
+                    total_damage += damage
+            col2.write("Shots:", shots, "Hits:", hits, "Damage:", total_damage)
+        else:
+            st.warning("Not enough bullets for Semi Burst!")
+
+    # Full Burst (5 shots)
+    if col3.button("Full burst"):
+        if st.session_state.magazine >= 5:
+            st.session_state.magazine -= 5
+            shots = 5
+            hits = 0
+            total_damage = 0
+            for i in range(shots):
+                roll = random.randint(1, 100)
+                if roll <= final_chance:
+                    hits += 1
+                    damage = random.randint(1, 10) + 2
+                    total_damage += damage
+            col3.write("Shots:", shots, "Hits:", hits, "Damage:", total_damage)
+        else:
+            st.warning("Not enough bullets for Full Burst!")
+
+    # Reload button
+    if col4.button("Reload"):
+        st.session_state.magazine = 15
+
+    # Display the updated magazine after firing.
     display_magazine()
+
 
 # === Attributes Page ===
 def attributes_page():
