@@ -122,7 +122,7 @@ def inventory_page():
     # Bottom row: Range, Firerate, and Burst
     cols_bottom = st.columns([1,1,1,1,1])
     cols_bottom[0].markdown("1d10+2")
-    cols_bottom[1].markdown("Short 20m / Medium 40m / Long 60m")
+    cols_bottom[1].markdown("Short 20m Medium 40m Long 60m")
     cols_bottom[2].markdown("3")
     cols_bottom[3].markdown("5")
     cols_bottom[4].markdown("15")
