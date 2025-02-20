@@ -173,7 +173,7 @@ def inventory_page():
                     hits += 1
                     damage = random.randint(1, 10) + 2
                     total_damage += damage
-            col2.write("Shots:", {shots}, "Hits:", {hits}, "Damage:", {total_damage})
+            col2.write(f"Shots: {shots}, Hits: {hits}, Damage: {total_damage}")
         else:
             st.warning("Not enough bullets for Semi Burst!")
 
@@ -190,7 +190,7 @@ def inventory_page():
                     hits += 1
                     damage = random.randint(1, 10) + 2
                     total_damage += damage
-            col3.write("Shots:", {shots}, "Hits:", {hits}, "Damage:", {total_damage})
+            col3.write(f"Shots: {shots}, Hits: {hits}, Damage: {total_damage}")
         else:
             st.warning("Not enough bullets for Full Burst!")
 
