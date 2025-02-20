@@ -24,7 +24,7 @@ if "monthly_wage" not in st.session_state:
 
 # --- Global Headline ---
 st.title("Space Gothic Character Generator")
-st.subheader("Mercenary")
+st.subheader("Mercenary Class")
 
 # === Calculation Functions ===
 def calculate_attributes():
