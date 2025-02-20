@@ -112,7 +112,7 @@ def display_magazine():
 def inventory_page():
     st.title("Inventory")
     st.subheader("Weapon: Luger .357 Automagnum")
-    # Top row: Labels
+    # Top row: Labels for weapon stats
     cols_top = st.columns([1, 1, 1, 1, 1])
     cols_top[0].markdown("**Damage:**")
     cols_top[1].markdown("**Range:**")
@@ -128,7 +128,7 @@ def inventory_page():
     cols_bottom[4].markdown("15")
 
     st.markdown("---")
-    # --- New Shooting Skill Section ---
+    # --- Shooting Skill Section ---
     # Base shooting skill for pistols is 65%.
     range_option = st.radio("Select Range", ("Short", "Medium", "Long"), index=1)
     if range_option == "Short":
@@ -141,8 +141,13 @@ def inventory_page():
     final_chance = base_chance + range_modifier
     st.write("Adjusted Shooting Chance:", final_chance, "%")
 
-    # --- Firing Mode Buttons with Shooting Logic ---
+    # --- Firing Mode Buttons with Fixed Result Placeholders ---
     col1, col2, col3, col4 = st.columns(4)
+    # Create fixed result display areas
+    single_result = col1.empty()
+    semi_result = col2.empty()
+    full_result = col3.empty()
+
     # Single Fire (1 shot)
     if col1.button("Single Fire"):
         if st.session_state.magazine >= 1:
@@ -150,13 +155,24 @@ def inventory_page():
             shots = 1
             hits = 0
             total_damage = 0
+            hit_rolls = []
+            damage_rolls = []
             for i in range(shots):
                 roll = random.randint(1, 100)
+                hit_rolls.append(roll)
                 if roll <= final_chance:
                     hits += 1
-                    damage = random.randint(1, 10) + 2
-                    total_damage += damage
-            col1.write(f"Shots: {shots}, Hits: {hits}, Damage: {total_damage}")
+                    d = random.randint(1, 10) + 2
+                    damage_rolls.append(d)
+                    total_damage += d
+                else:
+                    damage_rolls.append(0)
+            single_result.write(
+                f"**Hit Rolls:** {hit_rolls}\n"
+                f"**Total Hits:** {hits}\n"
+                f"**Damage Rolls:** {damage_rolls}\n"
+                f"**Total Damage:** {total_damage}"
+            )
         else:
             st.warning("Out of bullets!")
 
@@ -167,38 +183,60 @@ def inventory_page():
             shots = 3
             hits = 0
             total_damage = 0
+            hit_rolls = []
+            damage_rolls = []
             for i in range(shots):
                 roll = random.randint(1, 100)
+                hit_rolls.append(roll)
                 if roll <= final_chance:
                     hits += 1
-                    damage = random.randint(1, 10) + 2
-                    total_damage += damage
-            col2.write(f"Shots: {shots}, Hits: {hits}, Damage: {total_damage}")
+                    d = random.randint(1, 10) + 2
+                    damage_rolls.append(d)
+                    total_damage += d
+                else:
+                    damage_rolls.append(0)
+            semi_result.write(
+                f"**Hit Rolls:** {hit_rolls}\n"
+                f"**Total Hits:** {hits}\n"
+                f"**Damage Rolls:** {damage_rolls}\n"
+                f"**Total Damage:** {total_damage}"
+            )
         else:
             st.warning("Not enough bullets for Semi Burst!")
 
     # Full Burst (5 shots)
-    if col3.button("Full burst"):
+    if col3.button("Full Burst"):
         if st.session_state.magazine >= 5:
             st.session_state.magazine -= 5
             shots = 5
             hits = 0
             total_damage = 0
+            hit_rolls = []
+            damage_rolls = []
             for i in range(shots):
                 roll = random.randint(1, 100)
+                hit_rolls.append(roll)
                 if roll <= final_chance:
                     hits += 1
-                    damage = random.randint(1, 10) + 2
-                    total_damage += damage
-            col3.write(f"Shots: {shots}, Hits: {hits}, Damage: {total_damage}")
+                    d = random.randint(1, 10) + 2
+                    damage_rolls.append(d)
+                    total_damage += d
+                else:
+                    damage_rolls.append(0)
+            full_result.write(
+                f"**Hit Rolls:** {hit_rolls}\n"
+                f"**Total Hits:** {hits}\n"
+                f"**Damage Rolls:** {damage_rolls}\n"
+                f"**Total Damage:** {total_damage}"
+            )
         else:
             st.warning("Not enough bullets for Full Burst!")
 
-    # Reload button
+    # Reload button remains in col4
     if col4.button("Reload"):
         st.session_state.magazine = 15
 
-    # Display the updated magazine after firing.
+    # Display the updated magazine after processing firing actions.
     display_magazine()
 
 
