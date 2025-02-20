@@ -112,11 +112,7 @@ def display_magazine():
 def inventory_page():
     st.title("Inventory & Attacking")
     st.subheader("Weapon Stat Block: Luger .357 Automagnum")
-    st.write("**Damage:** 1d10+2")
-    st.write("**Range:** Short 20m / Medium 40m / Long 60m")
-    st.write("**Firerate:** 3")
-    st.write("**Burst:** 5")
-    st.write("**Magazine Size:** 15")
+    st.write("**Damage:** 1d10+2 **Range:** Short 20m / Medium 40m / Long 60m **Firerate:** 3 **Burst:** 5 **Magazine Size:** 15")
 
     # --- Firing Mode Buttons ---
     col1, col2, col3, col4 = st.columns(4)
@@ -127,13 +123,13 @@ def inventory_page():
             else:
                 st.warning("Out of bullets!")
     with col2:
-        if st.button("Normal Fire"):
+        if st.button("Semi Burst"):
             if st.session_state.magazine >= 3:
                 st.session_state.magazine -= 3
             else:
                 st.warning("Not enough bullets for normal fire!")
     with col3:
-        if st.button("Burst Fire"):
+        if st.button("Full burst"):
             if st.session_state.magazine >= 5:
                 st.session_state.magazine -= 5
             else:
