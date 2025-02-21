@@ -28,7 +28,8 @@ if "magazine" not in st.session_state:
 st.title("Space Gothic Character Generator")
 st.subheader("Mercenary Class")
 
-st.image("https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png", use_container_width=True)
+st.sidebar.image("https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png", use_container_width=True)
+
 
 
 
