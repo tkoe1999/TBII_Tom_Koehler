@@ -129,12 +129,13 @@ def inventory_page():
 
     st.markdown("---")
     # --- Shooting Skill Section ---
+    # Base shooting skill for pistols is 65%.
     range_option = st.radio("Select Range", ("Short", "Medium", "Long"), index=1)
     if range_option == "Short":
         range_modifier = 10
     elif range_option == "Medium":
         range_modifier = 0
-    else:  # Long
+    else:
         range_modifier = -10
     base_chance = 65
     final_chance = base_chance + range_modifier
@@ -142,24 +143,17 @@ def inventory_page():
 
     # --- Firing Mode Buttons Row ---
     firing_cols = st.columns(4)
-    with firing_cols[0]:
-        single_fire = st.button("Single Fire")
-    with firing_cols[1]:
-        semi_burst = st.button("Semi Burst")
-    with firing_cols[2]:
-        full_burst = st.button("Full Burst")
-    with firing_cols[3]:
-        reload_btn = st.button("Reload")
-
-    # --- Fixed Results Container (Always reserved) ---
-    results_container = st.container()
-    results_cols = results_container.columns(3)
-    # Reserve space (3 line breaks) in each result column even if nothing is displayed yet.
-    for rc in results_cols:
-        rc.markdown("<br>" * 3, unsafe_allow_html=True)
+    single_fire_btn = firing_cols[0].button("Single Fire")
+    semi_burst_btn = firing_cols[1].button("Semi Burst")
+    full_burst_btn = firing_cols[2].button("Full Burst")
+    reload_btn = firing_cols[3].button("Reload")
 
     # --- Process Firing Logic ---
-    if single_fire:
+    # Create a fixed session_state variable for firing results if not exists.
+    if "fire_results" not in st.session_state:
+        st.session_state.fire_results = ""
+
+    if single_fire_btn:
         if st.session_state.magazine >= 1:
             st.session_state.magazine -= 1
             shots = 1
@@ -177,17 +171,17 @@ def inventory_page():
                     total_damage += d
                 else:
                     damage_rolls.append(0)
-            results_cols[0].write(
-                f"**Single Fire**\n"
-                f"Hit Rolls: {hit_rolls}\n"
-                f"Total Hits: {hits}\n"
-                f"Damage Rolls: {damage_rolls}\n"
+            st.session_state.fire_results = (
+                f"**Single Fire**<br>"
+                f"Hit Rolls: {hit_rolls}<br>"
+                f"Total Hits: {hits}<br>"
+                f"Damage Rolls: {damage_rolls}<br>"
                 f"Total Damage: {total_damage}"
             )
         else:
-            st.warning("Out of bullets!")
+            st.session_state.fire_results = "Out of bullets!"
 
-    if semi_burst:
+    if semi_burst_btn:
         if st.session_state.magazine >= 3:
             st.session_state.magazine -= 3
             shots = 3
@@ -205,17 +199,17 @@ def inventory_page():
                     total_damage += d
                 else:
                     damage_rolls.append(0)
-            results_cols[1].write(
-                f"**Semi Burst**\n"
-                f"Hit Rolls: {hit_rolls}\n"
-                f"Total Hits: {hits}\n"
-                f"Damage Rolls: {damage_rolls}\n"
+            st.session_state.fire_results = (
+                f"**Semi Burst**<br>"
+                f"Hit Rolls: {hit_rolls}<br>"
+                f"Total Hits: {hits}<br>"
+                f"Damage Rolls: {damage_rolls}<br>"
                 f"Total Damage: {total_damage}"
             )
         else:
-            st.warning("Not enough bullets for Semi Burst!")
+            st.session_state.fire_results = "Not enough bullets for Semi Burst!"
 
-    if full_burst:
+    if full_burst_btn:
         if st.session_state.magazine >= 5:
             st.session_state.magazine -= 5
             shots = 5
@@ -233,24 +227,29 @@ def inventory_page():
                     total_damage += d
                 else:
                     damage_rolls.append(0)
-            results_cols[2].write(
-                f"**Full Burst**\n"
-                f"Hit Rolls: {hit_rolls}\n"
-                f"Total Hits: {hits}\n"
-                f"Damage Rolls: {damage_rolls}\n"
+            st.session_state.fire_results = (
+                f"**Full Burst**<br>"
+                f"Hit Rolls: {hit_rolls}<br>"
+                f"Total Hits: {hits}<br>"
+                f"Damage Rolls: {damage_rolls}<br>"
                 f"Total Damage: {total_damage}"
             )
         else:
-            st.warning("Not enough bullets for Full Burst!")
+            st.session_state.fire_results = "Not enough bullets for Full Burst!"
 
     if reload_btn:
         st.session_state.magazine = 15
+        st.session_state.fire_results = "Magazine reloaded."
 
-    # --- Add Vertical Spacing ---
-    st.markdown("<br><br><br>", unsafe_allow_html=True)
-
-    # --- Display the Updated Magazine ---
+    # --- Display Magazine Above Results ---
     display_magazine()
+
+    # --- Fixed Results Container ---
+    # The container below has a fixed minimum height so its size doesn't change.
+    st.markdown(
+        f'<div style="min-height:150px;">{st.session_state.fire_results}</div>',
+        unsafe_allow_html=True
+    )
 
 
 # === Attributes Page ===
