@@ -28,6 +28,8 @@ if "magazine" not in st.session_state:
 st.title("Space Gothic Character Generator")
 st.subheader("Mercenary Class")
 
+st.image("Mercenary_SpaceGothic_Art.png", use_column_width=True)
+
 
 # === Calculation Functions ===
 def calculate_attributes():
