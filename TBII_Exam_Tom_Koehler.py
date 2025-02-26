@@ -2,47 +2,68 @@ import streamlit as st
 import random
 import math
 
-# === Session State Initialization ===
-if "reroll_limit" not in st.session_state:
-    st.session_state.reroll_limit = 3
-if "reroll_count" not in st.session_state:
-    st.session_state.reroll_count = 0
-if "results" not in st.session_state:
-    st.session_state.results = [None] * 8
-if "luck" not in st.session_state:
-    st.session_state.luck = ""
-if "career_skill_points" not in st.session_state:
-    st.session_state.career_skill_points = ""
-if "free_skill_points" not in st.session_state:
-    st.session_state.free_skill_points = ""
-if "special_trait_results" not in st.session_state:
-    st.session_state.special_trait_results = []
-if "special_trait_text" not in st.session_state:
-    st.session_state.special_trait_text = ""
-if "monthly_wage" not in st.session_state:
-    st.session_state.monthly_wage = ""
-if "magazine" not in st.session_state:
-    st.session_state.magazine = 15
+# ---------------------------------------------------------------------
+# SESSION STATE INITIALIZATION
+# ---------------------------------------------------------------------
+# These variables are saved in "session_state" so they keep their value
+# even when the page reruns (for example, after a button click).
 
-# --- Global Headline ---
+if "reroll_limit" not in st.session_state:
+    st.session_state.reroll_limit = 3  # Maximum number of rerolls allowed
+if "reroll_count" not in st.session_state:
+    st.session_state.reroll_count = 0  # How many rerolls have been used
+if "results" not in st.session_state:
+    st.session_state.results = [None] * 8  # Placeholder for 8 attribute values
+if "luck" not in st.session_state:
+    st.session_state.luck = ""  # Calculated luck value
+if "career_skill_points" not in st.session_state:
+    st.session_state.career_skill_points = ""  # Calculated career skill points
+if "free_skill_points" not in st.session_state:
+    st.session_state.free_skill_points = ""  # Calculated free skill points
+if "special_trait_results" not in st.session_state:
+    st.session_state.special_trait_results = []  # List to store special traits
+if "special_trait_text" not in st.session_state:
+    st.session_state.special_trait_text = ""  # Combined special traits text
+if "monthly_wage" not in st.session_state:
+    st.session_state.monthly_wage = ""  # Random monthly wage
+if "magazine" not in st.session_state:
+    st.session_state.magazine = 15  # Magazine capacity (bullets available)
+
+# ---------------------------------------------------------------------
+# GLOBAL HEADER
+# ---------------------------------------------------------------------
 st.title("Space Gothic Character Generator")
 st.subheader("Mercenary Class")
 
+
+# ---------------------------------------------------------------------
+# LOAD CUSTOM CSS
+# ---------------------------------------------------------------------
+# This function reads a CSS file and injects its contents into the app.
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-# Load your CSS
+
+# Load the CSS file "style.css" (make sure it's in the same folder as this script)
 local_css("style.css")
 
-# Insert the image with the custom id
+# Insert an image with a custom ID so that our CSS can position it.
 st.markdown(
     '<img id="custom-image" src="https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png" alt="Mercenary Art">',
     unsafe_allow_html=True
 )
-# === Calculation Functions ===
+
+
+# ---------------------------------------------------------------------
+# CALCULATION FUNCTIONS (for attributes and skills)
+# ---------------------------------------------------------------------
+
 def calculate_attributes():
-    """Calculate the base attributes and reset rerolls & special traits."""
+    """
+    Calculate character attributes by generating random values.
+    This resets reroll count and special traits.
+    """
     st.session_state.reroll_count = 0
     st.session_state.special_trait_results = []
     st.session_state.special_trait_text = ""
@@ -54,7 +75,7 @@ def calculate_attributes():
         lambda: random.randint(6, 60) + 20,  # Luck (placeholder)
         lambda: random.randint(3, 30) + 70,  # Experience
         lambda: random.randint(8, 80) + 40,  # Weight
-        lambda: random.randint(5, 50) + 30   # Intelligence
+        lambda: random.randint(5, 50) + 30  # Intelligence
     ]
     st.session_state.results = [eq() for eq in equations]
     st.session_state.luck = math.ceil(st.session_state.results[2] / 2 + 20 + random.randint(3, 30))
@@ -63,7 +84,9 @@ def calculate_attributes():
 
 
 def reroll_attribute(index):
-    """Reroll a specific attribute (if within reroll limit) and update dependents."""
+    """
+    Reroll a specific attribute (if allowed) and update related values.
+    """
     if st.session_state.reroll_count < st.session_state.reroll_limit:
         equations = [
             lambda: random.randint(4, 40) + 50,
@@ -79,9 +102,11 @@ def reroll_attribute(index):
         st.session_state.results[index] = new_val
         st.session_state.reroll_count += 1
 
-        if index == 2:  # Update Luck if Willpower is rerolled.
+        # Update Luck if Willpower (index 2) was rerolled.
+        if index == 2:
             st.session_state.luck = math.ceil(st.session_state.results[2] / 2 + 20 + random.randint(3, 30))
-        if index in [5, 7]:  # Update skill points if Experience or Intelligence changes.
+        # Update skill points if Experience (index 5) or Intelligence (index 7) changed.
+        if index in [5, 7]:
             st.session_state.career_skill_points = math.ceil(3 * st.session_state.results[5])
             st.session_state.free_skill_points = math.ceil(st.session_state.results[5] + st.session_state.results[7])
     else:
@@ -89,7 +114,9 @@ def reroll_attribute(index):
 
 
 def roll_special_trait():
-    """Roll and record a random special trait (if within reroll limit)."""
+    """
+    Choose a random special trait from a list.
+    """
     if st.session_state.reroll_count < st.session_state.reroll_limit:
         traits = [
             "Greater Endurance", "Plasma Gunner", "Sharpshooter", "Sniper",
@@ -105,13 +132,22 @@ def roll_special_trait():
 
 
 def roll_monthly_wage():
-    """Calculate a random monthly wage."""
+    """
+    Calculate a random monthly wage.
+    """
     st.session_state.monthly_wage = random.randint(3, 30) + 20
 
 
-# === Inventory/Attacking Page Functions ===
+# ---------------------------------------------------------------------
+# INVENTORY/ATTACKING PAGE FUNCTIONS (weapon and firing logic)
+# ---------------------------------------------------------------------
+
 def display_magazine():
-    """Display the magazine as a single strip with filled/empty blocks."""
+    """
+    Display the magazine status as a row of blocks.
+    Green block (🟩) = bullet available.
+    White block (⬜) = empty slot.
+    """
     bullets_left = st.session_state.magazine
     total_bullets = 15
     filled = "🟩"
@@ -121,16 +157,24 @@ def display_magazine():
 
 
 def inventory_page():
+    """
+    Show the Inventory page with weapon stats and firing controls.
+    This page lets you simulate firing the Luger .357 Automagnum.
+    """
     st.title("Inventory")
     st.subheader("Weapon: Luger .357 Automagnum")
-    # Top row: Labels for weapon stats
+
+    # --------------------------
+    # Display Weapon Statistics
+    # --------------------------
+    # First row: labels
     cols_top = st.columns([1, 1, 1, 1, 1])
     cols_top[0].markdown("**Damage:**")
     cols_top[1].markdown("**Range:**")
     cols_top[2].markdown("**Fire Rate:**")
     cols_top[3].markdown("**Burst Rate:**")
     cols_top[4].markdown("**Magazine Size:**")
-    # Bottom row: Values
+    # Second row: values
     cols_bottom = st.columns([1, 1, 1, 1, 1])
     cols_bottom[0].markdown("1d10+2")
     cols_bottom[1].markdown("Short 20m <br> Medium 40m <br> Long 60m", unsafe_allow_html=True)
@@ -139,8 +183,11 @@ def inventory_page():
     cols_bottom[4].markdown("15")
 
     st.markdown("---")
-    # --- Shooting Skill Section ---
-    # Base shooting skill for pistols is 65%.
+
+    # --------------------------
+    # Shooting Skill Section
+    # --------------------------
+    # The user chooses a range. This adjusts the shooting chance.
     range_option = st.radio("Select Range", ("Short", "Medium", "Long"), index=1)
     if range_option == "Short":
         range_modifier = 10
@@ -148,22 +195,27 @@ def inventory_page():
         range_modifier = 0
     else:
         range_modifier = -10
-    base_chance = 65
+    base_chance = 65  # Base chance (in percent) for pistol shooting.
     final_chance = base_chance + range_modifier
     st.write("Adjusted Shooting Chance:", final_chance, "%")
 
-    # --- Firing Mode Buttons Row ---
+    # --------------------------
+    # Firing Mode Buttons
+    # --------------------------
+    # Buttons for Single Fire, Semi Burst, Full Burst, and Reload.
     firing_cols = st.columns(4)
     single_fire_btn = firing_cols[0].button("Single Fire")
     semi_burst_btn = firing_cols[1].button("Semi Burst")
     full_burst_btn = firing_cols[2].button("Full Burst")
     reload_btn = firing_cols[3].button("Reload")
 
-    # --- Process Firing Logic ---
-    # Create a fixed session_state variable for firing results if not exists.
+    # Use a session state variable to store firing results.
     if "fire_results" not in st.session_state:
         st.session_state.fire_results = ""
 
+    # --------------------------
+    # Firing Logic for Each Mode
+    # --------------------------
     if single_fire_btn:
         if st.session_state.magazine >= 1:
             st.session_state.magazine -= 1
@@ -177,7 +229,7 @@ def inventory_page():
                 hit_rolls.append(roll)
                 if roll <= final_chance:
                     hits += 1
-                    d = random.randint(3, 12)  # Simplified damage roll
+                    d = random.randint(3, 12)  # Damage between 3 and 12
                     damage_rolls.append(d)
                     total_damage += d
                 else:
@@ -252,26 +304,38 @@ def inventory_page():
         st.session_state.magazine = 15
         st.session_state.fire_results = "Magazine reloaded."
 
-    # --- Display Magazine Above Results ---
+    # --------------------------
+    # Display the Magazine
+    # --------------------------
+    # Show the current bullet status above the firing results.
     display_magazine()
 
-    # --- Fixed Results Container ---
-    # The container below has a fixed minimum height so its size doesn't change.
+    # --------------------------
+    # Fixed Results Container
+    # --------------------------
+    # Reserve a fixed space for firing results so the layout doesn't jump.
     st.markdown(
         f'<div style="min-height:150px;">{st.session_state.fire_results}</div>',
         unsafe_allow_html=True
     )
 
 
-# === Attributes Page ===
+# ---------------------------------------------------------------------
+# ATTRIBUTES PAGE FUNCTIONS
+# ---------------------------------------------------------------------
 def attributes_page():
+    """
+    Show character attributes and allow recalculation and rerolls.
+    """
     st.title("Attributes & Rolls")
     if st.button("Calculate Attributes"):
         calculate_attributes()
 
     if st.session_state.results and None not in st.session_state.results:
+        # List of attribute names.
         attribute_names = ["Strength", "Agility", "Willpower", "Endurance",
                            "Luck (base)", "Experience", "Weight", "Intelligence"]
+        # Display each attribute with a reroll button.
         for i, name in enumerate(attribute_names):
             col1, col2, col3 = st.columns([2, 2, 1])
             with col1:
@@ -302,8 +366,13 @@ def attributes_page():
         st.write("Monthly Wage:", st.session_state.monthly_wage)
 
 
-# === Personal Dossier Page ===
+# ---------------------------------------------------------------------
+# PERSONAL DOSSIER PAGE FUNCTIONS
+# ---------------------------------------------------------------------
 def personal_dossier_page():
+    """
+    Show a form to fill in personal details.
+    """
     st.title("Personal Dossier of the Terran Security Archive")
     fields = [
         "Name", "Surname", "Gender", "Date of birth", "Place of birth",
@@ -320,7 +389,10 @@ def personal_dossier_page():
     st.json(dossier)
 
 
-# === Navigation via Sidebar ===
+# ---------------------------------------------------------------------
+# PAGE NAVIGATION (Sidebar)
+# ---------------------------------------------------------------------
+# This radio button in the sidebar lets you choose which page to view.
 page = st.sidebar.radio("Navigate", ("Attributes", "Inventory/Attacking", "Personal Dossier"))
 
 if page == "Attributes":
