@@ -30,6 +30,18 @@ st.subheader("Mercenary Class")
 
 st.image("https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png", use_container_width=True)
 
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+st.markdown(
+    '<img id="custom-image" src="https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png" alt="Mercenary Art">',
+    unsafe_allow_html=True
+)
+
+
+# Load your CSS
+local_css("style.css")
 
 
 # === Calculation Functions ===
@@ -46,7 +58,7 @@ def calculate_attributes():
         lambda: random.randint(6, 60) + 20,  # Luck (placeholder)
         lambda: random.randint(3, 30) + 70,  # Experience
         lambda: random.randint(8, 80) + 40,  # Weight
-        lambda: random.randint(5, 50) + 30  # Intelligence
+        lambda: random.randint(5, 50) + 30   # Intelligence
     ]
     st.session_state.results = [eq() for eq in equations]
     st.session_state.luck = math.ceil(st.session_state.results[2] / 2 + 20 + random.randint(3, 30))
