@@ -35,8 +35,7 @@ def local_css(file_name):
 # Load your CSS
 local_css("style.css")
 
-
-# Place the image with the custom id
+# Insert the image with the custom id
 st.markdown(
     '<img id="custom-image" src="https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png" alt="Mercenary Art">',
     unsafe_allow_html=True
