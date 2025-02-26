@@ -40,8 +40,6 @@ st.markdown(
     '<img id="custom-image" src="https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png" alt="Mercenary Art">',
     unsafe_allow_html=True
 )
-st.image("https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png", use_container_width=True)
-
 # === Calculation Functions ===
 def calculate_attributes():
     """Calculate the base attributes and reset rerolls & special traits."""
