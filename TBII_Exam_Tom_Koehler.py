@@ -28,14 +28,14 @@ if "magazine" not in st.session_state:
 st.title("Space Gothic Character Generator")
 st.subheader("Mercenary Class")
 
-st.image("https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png", use_container_width=True)
-
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Load your CSS
 local_css("style.css")
+
+st.image("https://raw.githubusercontent.com/tkoe1999/TBII_Tom_Koehler/main/Mercenary_SpaceGothic_Art.png", use_container_width=True)
 
 # Place the image with the custom id
 st.markdown(
